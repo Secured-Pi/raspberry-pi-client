@@ -19,7 +19,7 @@ def lock_control(action, pin_num=18):
     return pi.get_servo_pulsewidth(pin_num)
 
 
-io_client.on('unlock', lambda: lock_control('unlock'))
-io_client.on('lock', lambda: lock_control('lock'))
+io_client.on('unlock', lambda x: lock_control('unlock'))
+io_client.on('lock', lambda x: lock_control('lock'))
 
 io_client.wait()
