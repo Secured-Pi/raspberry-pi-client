@@ -1,30 +1,25 @@
 # coding: utf-8
-from flask import Flask
 from socketIO_client import SocketIO
 import pigpio
 
 io_client = SocketIO('52.43.75.183', 8000)
-app = Flask(__name__)
 
 
-@app.route('/unlock')
-def unlock():
+def lock_control(pin_num, action):
     pi = pigpio.pi()
-    pi.set_servo_pulsewidth(18, 600)
+    avail_actions = {
+        'unlock': 600,
+        'lock': 2400,
+    }
+    pulsewidth = avail_actions.get(action, '')
+    if not pulsewidth:
+        raise ValueError('Action not permitted')
+    pi.set_servo_pulsewidth(pin_num, pulsewidth)
     pi.stop()
-    return 'Door unlocked'
+    return pi.get_servo_pulsewidth(pin_num)
 
 
-@app.route('/lock')
-def lock():
-    pi = pigpio.pi()
-    pi.set_servo_pulsewidth(18, 2400)
-    pi.stop()
-    return 'Door locked'
+io_client.on('unlock', lock_control('unlock'))
+io_client.on('lock', lock_control('lock'))
 
-io_client.on('unlock', unlock)
-io_client.on('lock', lock)
-
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=8000)
-    io_client.wait()
+io_client.wait()
