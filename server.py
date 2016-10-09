@@ -15,3 +15,6 @@ def turn_left():
 def turn_right():
     pi.set_servo_pulsewidth(18, 2500)
     return 'Turned right'
+
+if __name__ == '__main__':
+    app.run(debug=True, port=8000)
