@@ -20,4 +20,4 @@ class RPiLock(object):
 
     def listen_to_signal(self):
         for action in self.avail_actions:
-            self.io_client.on(action, lambda x: self.lock_control(action))
+            self.io_client.on(action, lambda x: self.control(action))
