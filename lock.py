@@ -1,10 +1,14 @@
 # coding: utf-8
+from socketIO_client import SocketIO
+import pigpio
+
+
 class RPiLock(object):
-    """RPiLock class."""
-    def __init__(self, pigio_instace, io_client):
+    """RPiLock class, a representation of the physical lock."""
+    def __init__(self, server, port=80):
         """RPiLock instance with open socketio connection."""
-        self.io_client = io_client
-        self.pi = pigio_instace
+        self.io_client = SocketIO(server, port)
+        self.pi = pigpio.pi()
         self.avail_actions = {
             'unlock': 600,
             'lock': 2400,
@@ -19,6 +23,7 @@ class RPiLock(object):
         return self.pi.get_servo_pulsewidth(pin_num)
 
     def listen_to_signal(self):
-        for action in self.avail_actions:
-            self.io_client.on(action, lambda x: self.control(action))
+        """Establish a never-ending connection and listen to signal."""
+        self.io_client.on('unlock', lambda x: self.control('unlock'))
+        self.io_client.on('lock', lambda x: self.control('lock'))
         self.io_client.wait()
