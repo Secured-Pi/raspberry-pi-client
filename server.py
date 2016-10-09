@@ -9,7 +9,7 @@ def turn_left():
     pi = pigpio.pi()
     pi.set_servo_pulsewidth(18, 500)
     pi.stop()
-    return pi.get_servo_pulsewidth()
+    return 'Turned left'
 
 
 @app.route('/right')
