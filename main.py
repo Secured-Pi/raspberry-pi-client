@@ -1,20 +1,15 @@
-import RPi.GPIO as GPIO
-import time
+# coding: utf-8
+from socketIO_client import SocketIO
+from lock import RPiLock
+import pigpio
 
-GPIO.setmode(GPIO.BOARD)
+SERVER, PORT = '52.43.75.183', 8000
 
-p = GPIO.PWM(12, 50)
 
-p.start(7.5)
+def main():
+    rpi_lock = RPiLock(pigpio.pi(), SocketIO(SERVER, PORT))
+    rpi_lock.listen_to_signal()
+    rpi_lock.io_client.wait()
 
-try:
-    while True:
-        p.ChangeDutyCycle(7.5)
-        time.sleep(0.25)
-        p.ChangeDutyCycle(2.5)
-        time.sleep(0.25)
-        p.ChangeDutyCycle(12.5)
-        time.sleep(0.25)
-except KeyboardInterrupt:
-    p.stop()
-    GPIO.cleanup()
+if __name__ == '__main__':
+    main()
