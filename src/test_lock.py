@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from src.lock import RPiLock
+from lock import RPiLock
 
 
 def test_init():
