@@ -1,4 +1,4 @@
-# coding: utf-8
+# -*- coding: utf-8 -*-
 from lock import RPiLock
 
 SERVER, PORT = '52.43.75.183', 8000
