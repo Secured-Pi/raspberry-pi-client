@@ -5,7 +5,7 @@ import pigpio
 
 class RPiLock(object):
     """RPiLock class, a representation of the physical lock."""
-    def __init__(self, server, port=80):
+    def __init__(self, server, port):
         """RPiLock instance with open socketio connection."""
         self.io_client = SocketIO(server, port)
         self.pi = pigpio.pi()
