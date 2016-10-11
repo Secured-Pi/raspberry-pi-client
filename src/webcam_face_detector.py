@@ -47,7 +47,7 @@ def begin_watch(debug=False):
         if debug:
             for (x, y, w, h) in faces:
                 cv2.rectangle(gray, (x, y), (x + w, y + h), (0, 255, 0), 2)
-        
+
         # for logging
         # print(num_faces_state)
         if num_faces_state != len(faces):
