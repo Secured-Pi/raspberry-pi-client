@@ -11,6 +11,6 @@ setup(
     license="MIT",
     py_modules=["RPi-client"],
     package_dir={'': 'src'},
-    install_requires=['socketIO_client'],
+    install_requires=['socketIO_client','SPI-Py','MFRC522'],
     extras_require={'test': ['pytest', 'pytest-watch', 'tox']},
 )
