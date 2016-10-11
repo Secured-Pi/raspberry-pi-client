@@ -10,6 +10,7 @@ https://pythonprogramming.net/loading-video-python-opencv-tutorial/
 import cv2
 import logging as log
 import datetime as dt
+import Image
 import requests
 
 CASCADE_MODEL = 'haarcascade_frontalface_default.xml'
@@ -59,9 +60,11 @@ def begin_watch(debug=False):
         if num_faces_state != len(faces):
             num_faces_state = len(faces)
             if num_faces_state == 1:
-                cv2.imwrite('testing.jpg', gray)
+                cv2.imwrite('testing.png', gray)
+                im = Image.open('testing.png')
+                im.save('testing.gif')
                 print('picture taken!')
-                send_img_to_server('testing.png')
+                send_img_to_server('testing.gif')
                 log.info(str(dt.datetime.now()) + '::face found.')
 
         if debug:
