@@ -90,3 +90,7 @@ ENV/
 
 # logs
 src/entries.log
+
+# images
+src/testing.png
+src/testing.jpg

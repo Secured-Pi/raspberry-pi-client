@@ -17,14 +17,17 @@ CASCADE_MODEL = 'haarcascade_frontalface_default.xml'
 FACE_CASCADE = cv2.CascadeClassifier(CASCADE_MODEL)
 log.basicConfig(filename='entries.log', level=log.INFO)
 TOKEN = 'test-token'
-SERVER, PORT = '52.43.75.183', 8000
+SERVER, PORT = '52.43.75.183', 80   # NOTE: make port of Django server
 
 
 def send_img_to_server(img_filename, server=SERVER, port=PORT, token=TOKEN):
-    """Send a post request to the main server.
+    """Send a POST request to the main server.
 
     The request should contain the image, as well as a token.
     """
+    # TODO:
+    # build/format the request to send to the Django server
+    # include: img, token of some kind
     print('image sent to server!')
     pass
 
