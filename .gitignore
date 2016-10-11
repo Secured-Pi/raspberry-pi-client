@@ -94,10 +94,3 @@ src/entries.log
 # images
 src/testing.png
 src/testing.jpg
-
-# cascade
-src/haarcascade_frontalface_default.xml
-
-src/nohup.out
-
-

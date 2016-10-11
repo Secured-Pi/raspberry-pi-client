@@ -10,54 +10,26 @@ https://pythonprogramming.net/loading-video-python-opencv-tutorial/
 import cv2
 import logging as log
 import datetime as dt
-from PIL import Image
+import Image
 import requests
-import time
 
 CASCADE_MODEL = 'haarcascade_frontalface_default.xml'
 FACE_CASCADE = cv2.CascadeClassifier(CASCADE_MODEL)
 log.basicConfig(filename='entries.log', level=log.INFO)
 TOKEN = 'test-token'
-SERVER, PORT = 'http://54.186.97.121', 8000
-API_ENDPT = '/api/locks/events'
+SERVER, PORT = '52.43.75.183', 80   # NOTE: make port of Django server
 
 
-def get_serial():
-    from io import open
-    serial = None
-    with open('/proc/cpuinfo', 'r') as fh:
-        for line in fh.readlines():
-            if 'Serial' in line[0:6]:
-                    serial = line[10:26]
-    if not serial:
-        raise IOError('Serial not found, make sure this is a RPi client')
-    return serial
-
-
-def send_img_to_server(img_filename='testing.gif', server=SERVER, port=PORT, token=TOKEN):
+def send_img_to_server(img_filename, server=SERVER, port=PORT, token=TOKEN):
     """Send a POST request to the main server.
 
     The request should contain the image, as well as a token.
     """
     # TODO:
     # build/format the request to send to the Django server
-    # include: img, token, serial, RFID
-    data = {}
-    data['lock_id']
-    data['token'] = token
-    data['serial'] = get_serial()
-    data['RFID'] = ''
-
-    with open('testing.gif', 'rb') as f:
-		files = {'image': ('testing.gif', f, 'image/gif')}
-
-    response = requests.post(server + ':' +str(PORT) + API_ENDPT, data=data, files=files)
-    if response.status_code == 200:
-        print('image sent to server!')
-        return(response)
-    else:
-	    print('there was an error')
-	    return response
+    # include: img, token of some kind
+    print('image sent to server!')
+    pass
 
 
 def begin_watch(debug=False):
@@ -91,13 +63,12 @@ def begin_watch(debug=False):
         if num_faces_state != len(faces):
             num_faces_state = len(faces)
             if num_faces_state == 1:
-				time.sleep(1)
                 cv2.imwrite('testing.png', gray)
                 im = Image.open('testing.png')
                 im.save('testing.gif')
                 print('picture taken!')
                 send_img_to_server('testing.gif')
-                log.info(str(dt.datetime.now()) + ' :: face found.')
+                log.info(str(dt.datetime.now()) + '::face found.')
 
         if debug:
             cv2.imshow('Video', gray)   # black and white
@@ -108,6 +79,3 @@ def begin_watch(debug=False):
     video_capture.release()
     if debug:
         cv2.destroyAllWindows()
-
-# if __name__ == '__main__':
-# 	begin_watch(debug=True)
