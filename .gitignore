@@ -94,3 +94,9 @@ src/entries.log
 # images
 src/testing.png
 src/testing.jpg
+src/testing.gif
+
+# cascade
+haarcascade_frontalface_default.xml
+
+nohup.out
