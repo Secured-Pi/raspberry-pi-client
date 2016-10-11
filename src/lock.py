@@ -3,10 +3,11 @@
 
 class RPiLock(object):
     """RPiLock class, a representation of the physical lock."""
-    def __init__(self, server, port):
+    def __init__(self, server, port, model='motorized'):
         """RPiLock instance with socketio connection."""
         import pigpio
         self.serial = self.get_serial()
+        self.model = model
         self.server, self.port = server, port
         self.pi = pigpio.pi()
         self.avail_actions = {
@@ -23,7 +24,7 @@ class RPiLock(object):
         serial = None
         with open('/proc/cpuinfo', 'r') as fh:
             for line in fh.readlines():
-                if 'Serial' in line[0:6]:
+                if 'Serial' in line[:6]:
                     serial = line[10:26]
         if not serial:
             raise IOError('Serial not found, make sure this is a RPi client')
@@ -41,13 +42,18 @@ class RPiLock(object):
         """Handling socketio event coming from server."""
         pass
 
-    def control(self, action, pin_num=18):
-        """Output approriate control signal and pulswidth to the GPIO pins."""
+    def control_motor(self, action, pin_num=18):
+        """
+        Output approriate motor control signal and pulswidth to the GPIO pins.
+        """
         pulsewidth = self.avail_actions.get(action, None)
         if not pulsewidth:
             raise ValueError('Action not permitted')
         self.pi.set_servo_pulsewidth(pin_num, pulsewidth)
         return self.pi.get_servo_pulsewidth(pin_num)
+
+    def control_electromagnetic(self):
+        pass
 
     def io_connect(self):
         """Connect to socketio server."""
@@ -57,6 +63,6 @@ class RPiLock(object):
 
     def listen_to_signal(self):
         """Establish a never-ending connection and listen to signal."""
-        self.io_client.on('unlock', lambda x: self.control('unlock'))
-        self.io_client.on('lock', lambda x: self.control('lock'))
+        self.io_client.on('unlock', lambda x: self.control_motor('unlock'))
+        self.io_client.on('lock', lambda x: self.control_motor('lock'))
         self.io_client.wait()
