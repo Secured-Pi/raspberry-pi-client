@@ -4,7 +4,7 @@ from lock import RPiLock
 import logging
 logging.getLogger('socketIO-client').setLevel(logging.DEBUG)
 
-SERVER, PORT = '52.43.75.183', 8000
+SERVER, PORT = '52.43.75.183', 5000
 
 
 def main():
