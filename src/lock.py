@@ -1,15 +1,13 @@
 # coding: utf-8
-from socketIO_client import SocketIO
-import pigpio
 
 
 class RPiLock(object):
     """RPiLock class, a representation of the physical lock."""
     def __init__(self, server, port):
         """RPiLock instance with socketio connection."""
+        import pigpio
         self.serial = self.get_serial()
-        self.io_client = SocketIO(server, port)
-        self.io_client.emit('listening', {'serial': self.serial})
+        self.server, self.port = server, port
         self.pi = pigpio.pi()
         self.avail_actions = {
             'unlock': 600,
@@ -17,6 +15,10 @@ class RPiLock(object):
         }
 
     def get_serial(self):
+        """
+        Get serial number on RPi, this need to be updated whenever new RPI
+        model comes out.
+        """
         from io import open
         serial = None
         with open('/proc/cpuinfo', 'r') as fh:
@@ -27,6 +29,18 @@ class RPiLock(object):
             raise IOError('Serial not found, make sure this is a RPi client')
         return serial
 
+    def update_serverside_status(self, data):
+        """Update lock status on central server."""
+        import requests
+        req_url = 'http://{}:{}/api/locks/{}'.format(
+            self.server, self.port, data['lock_id']
+        )
+        return requests.post(req_url, json=data)
+
+    def handle_io_event(self, data):
+        """Handling socketio event coming from server."""
+        pass
+
     def control(self, action, pin_num=18):
         """Output approriate control signal and pulswidth to the GPIO pins."""
         pulsewidth = self.avail_actions.get(action, None)
@@ -34,6 +48,12 @@ class RPiLock(object):
             raise ValueError('Action not permitted')
         self.pi.set_servo_pulsewidth(pin_num, pulsewidth)
         return self.pi.get_servo_pulsewidth(pin_num)
+
+    def io_connect(self):
+        """Connect to socketio server."""
+        from socketIO_client import SocketIO
+        self.io_client = SocketIO(self.server, self.port)
+        self.io_client.emit('listening', {'serial': self.serial})
 
     def listen_to_signal(self):
         """Establish a never-ending connection and listen to signal."""
