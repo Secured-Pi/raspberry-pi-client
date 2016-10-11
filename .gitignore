@@ -87,3 +87,10 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# logs
+src/entries.log
+
+# images
+src/testing.png
+src/testing.jpg
