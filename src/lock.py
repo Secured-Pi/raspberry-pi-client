@@ -68,9 +68,8 @@ class RPiLock(object):
 
     def handle_io_event(self, data):
         """Handling socketio event coming from server."""
-        import sys
         getattr(
-            sys.modules[__name__],
+            self,
             'control_{}'.format(self.model)
         )(data['action'])
         data['']
