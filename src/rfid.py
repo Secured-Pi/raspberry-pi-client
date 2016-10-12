@@ -1,95 +1,58 @@
 #!/usr/bin/python2
-import re, sys, signal, os, time, datetime
 import RPi.GPIO as GPIO
 import MFRC522
-from lock import RPiLock
-
-
-
-CARDS = [
-'18922217131215',
-'5445101143241'
-]
-
+import signal
 
 continue_reading = True
+
+# Capture SIGINT for cleanup when the script is aborted
+def end_read(signal,frame):
+    global continue_reading
+    print "Ctrl+C captured, ending read."
+    continue_reading = False
+    GPIO.cleanup()
+
+# Hook the SIGINT
 signal.signal(signal.SIGINT, end_read)
+
+# Create an object of the class MFRC522
 MIFAREReader = MFRC522.MFRC522()
-SERVER, PORT = 'http://54.186.97.121', 8000
-API_ENDPT = '/api/locks/events'
-lock = RPiLock(SERVER, PORT)
 
-def get_serial(self):
-    from io import open
-    serial = None
-    with open('/proc/cpuinfo', 'r') as fh:
-        for line in fh.readlines():
-            if 'Serial' in line[0:6]:
-                serial = line[10:26]
-    if not serial:
-        raise IOError('Serial not found, make sure this is a RPi client')
-    return serial
-    
+# Welcome message
+print "Welcome to the MFRC522 data read example"
+print "Press Ctrl-C to stop."
 
-def send_rfid_to_server(uid, server=SERVER, port=PORT, token=TOKEN):
-    """Send a POST request to the main server.
+# This loop keeps checking for chips. If one is near it will get the UID and authenticate
+while continue_reading:
 
-    The request should contain the image, as well as a token.
-    """
-    # TODO:
-    # build/format the request to send to the Django server
-    # include: img, token, serial, RFID
-    data = {}
-    data['lock_id']
-    data['token'] = token
-    data['serial'] = get_serial()
-    data['RFID'] = uid
+    # Scan for cards
+    (status,TagType) = MIFAREReader.MFRC522_Request(MIFAREReader.PICC_REQIDL)
 
-    with open('testing.gif', 'rb') as f:
-        files = {'image': ('testing.gif', f, 'image/gif')}
+    # If a card is found
+    if status == MIFAREReader.MI_OK:
+        print "Card detected"
 
-    response = requests.post(server + ':' +str(PORT) + API_ENDPT, data=data, files=files)
-    if response.status_code == 200:
-        print('image sent to server!')
-        return(response)
-    else:
-        print('there was an error')
-        return response
+    # Get the UID of the card
+    (status,uid) = MIFAREReader.MFRC522_Anticoll()
 
-def unlock_door(duration):
-    if status == MIFAREReader.MI_OK and uid in CARDS:
-        return lock.control('unlock', 600)
+    # If we have the UID, continue
+    if status == MIFAREReader.MI_OK:
 
+        # Print UID
+        print "Card read UID: "+str(uid[0])+","+str(uid[1])+","+str(uid[2])+","+str(uid[3])
 
-# if __name__ == '__main__':
-#     buffer = ''
-#     ser = serial.Serial('/dev/ttyUSB0', BITRATE, timeout=0)
-#     rfidPattern = re.compile(b'[\W_]+')
-#     signal.signal(signal.SIGINT, signal_handler)
-#
-#     while True:
-#       # Read data from RFID reader
-#       buffer = buffer + ser.read(ser.inWaiting())
-#       if '\n' in buffer:
-#         lines = buffer.split('\n')
-#         last_received = lines[-2]
-#         match = rfidPattern.sub('', last_received)
-#
-#         if match:
-#           print match
-#           if match in CARDS:
-#             print 'card authorized'
-#             unlock_door(10)
-#           else:
-#             print 'unauthorized card'
-#
-#         # Clear buffer
-#         buffer = ''
-#         lines = ''
-#
-#       # Listen for Exit Button input
-#       if not GPIO.input(3):
-#         print "button pressed"
-#         unlock_door(5)
-#
-#       time.sleep(0.1)
+        # This is the default key for authentication
+        key = [0xFF,0xFF,0xFF,0xFF,0xFF,0xFF]
+
+        # Select the scanned tag
+        MIFAREReader.MFRC522_SelectTag(uid)
+
+        # Authenticate
+        status = MIFAREReader.MFRC522_Auth(MIFAREReader.PICC_AUTHENT1A, 8, key, uid)
+
+        # Check if authenticated
+        if status == MIFAREReader.MI_OK:
+            MIFAREReader.MFRC522_Read(8)
+            MIFAREReader.MFRC522_StopCrypto1()
+        else:
+print "Authentication error"
