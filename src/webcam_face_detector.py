@@ -71,6 +71,7 @@ def begin_watch(server=SERVER, port=PORT, token=TOKEN, debug=False):
     video_capture.set(3, 640)
     video_capture.set(4, 480)
     num_faces_state = 0
+    RFID = 'unread'
 
     while True:
         ret, frame = video_capture.read()
