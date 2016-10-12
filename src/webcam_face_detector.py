@@ -13,6 +13,8 @@ import datetime as dt
 from PIL import Image
 import requests
 import time
+from rfid import get_rfid
+
 
 CASCADE_MODEL = 'haarcascade_frontalface_default.xml'
 FACE_CASCADE = cv2.CascadeClassifier(CASCADE_MODEL)
@@ -35,7 +37,7 @@ def get_serial():
     return serial
 
 
-def send_img_to_server(img_filename, server, port, token):
+def send_img_to_server(img_filename, server, port, RFID, token):
     """Send a POST request to the main server.
 
     The request should contain the image, as well as a token.
@@ -44,7 +46,7 @@ def send_img_to_server(img_filename, server, port, token):
         'lock_id': '4',
         'token': token,
         'serial': get_serial(),
-        'RFID': '',
+        'RFID': RFID,
     }
     files = {'photo': open(img_filename, 'rb')}
     response = requests.post(server + ':' + str(PORT) + API_ENDPT,
@@ -73,7 +75,10 @@ def begin_watch(server=SERVER, port=PORT, token=TOKEN, debug=False):
     num_faces_state = 0
     RFID = 'unread'
 
+    RFID = get_RFID()
+
     while True:
+
         ret, frame = video_capture.read()
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         faces = FACE_CASCADE.detectMultiScale(
@@ -97,7 +102,7 @@ def begin_watch(server=SERVER, port=PORT, token=TOKEN, debug=False):
                 im = Image.open('testing.png')
                 im.save('testing.gif')
                 print('picture taken!')
-                send_img_to_server('testing.gif', server, port, token)
+                send_img_to_server('testing.gif', server, port, RFID, token)
                 log.info(str(dt.datetime.now()) + ' :: face found.')
 
         if debug:
