@@ -39,7 +39,7 @@ class RPiLock(object):
             req_url,
             auth=requests.auth.HTTPBasicAuth(
                 self.user.username,
-                self.user.password
+                self.user.password,
             )
         ).json()
         for lock in all_locks:
@@ -48,10 +48,17 @@ class RPiLock(object):
 
     def update_serverside_status(self, data):
         """Update lock status on central server."""
-        req_url = 'http://{}:{}/api/locks/{}'.format(
+        req_url = 'http://{}:{}/api/locks/{}/'.format(
             self.server, self.port, self.lock_id
         )
-        return requests.post(req_url, json=data)
+        return requests.post(
+            req_url,
+            auth=requests.auth.HTTPBasicAuth(
+                self.user.username,
+                self.user.password
+            ),
+            json=data,
+        )
 
     def control_motorized(self, action, pin_num=18):
         """
@@ -72,7 +79,10 @@ class RPiLock(object):
             self,
             'control_{}'.format(self.model)
         )(data['action'])
-        # self.update_serverside_status(data)
+        self.update_serverside_status({
+            'serial': self.serial,
+            'status': data['action'],
+        })
 
     def listen_for_io_signal(self):
         """Establish a never-ending connection and listen to signal."""
