@@ -71,6 +71,7 @@ class RPiLock(object):
             'name': name,
             'location': location,
             'serial': self.serial,
+            'active': True,
             'status': 'pending'
         }
         added_lock = requests.post(
