@@ -42,15 +42,15 @@ class LockTestCase(unittest.TestCase):
         lock = RPiLock('localhost', 8000)
         self.assertRaises(ValueError, lock.control, 'randomaction')
 
-    def test_action_unlock(self):
+    def test_action_motorized_unlock(self):
         from lock import RPiLock
         lock = RPiLock('localhost', 8000)
-        self.assertTrue(lock.control('unlock'), 600)
+        self.assertTrue(lock.control_motor('unlock'), 600)
 
-    def test_action_lock(self):
+    def test_action_motorized_lock(self):
         from lock import RPiLock
         lock = RPiLock('localhost', 8000)
-        self.assertTrue(lock.control('lock'), 2400)
+        self.assertTrue(lock.control_motor('lock'), 2400)
 
 if __name__ == '__main__':
     unittest.main()
