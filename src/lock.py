@@ -35,7 +35,7 @@ class RPiLock(object):
 
     def get_lock_id(self):
         req_url = 'http://{}:{}/api/locks/'.format(self.server, self.port)
-        all_locks = requests.post(
+        all_locks = requests.get(
             req_url,
             auth=requests.auth.HTTPBasicAuth(
                 self.user.username,
