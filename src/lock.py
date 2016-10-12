@@ -46,7 +46,7 @@ class RPiLock(object):
             if lock['serial'] == self.serial:
                 return lock['pk']
 
-    def update_serverside_status(self, data):
+    def update_serverside_status(self, action):
         """Update lock status on central server."""
         req_url = 'http://{}:{}/api/locks/{}/'.format(
             self.server, self.port, self.lock_id
@@ -57,7 +57,7 @@ class RPiLock(object):
                 self.user.username,
                 self.user.password
             ),
-            json=data,
+            json={'status': action + 'ed'},
         )
 
     def control_motorized(self, action, pin_num=18):
@@ -79,10 +79,7 @@ class RPiLock(object):
             self,
             'control_{}'.format(self.model)
         )(data['action'])
-        self.update_serverside_status({
-            'serial': self.serial,
-            'status': data['action'],
-        })
+        self.update_serverside_status(data['action'])
 
     def listen_for_io_signal(self):
         """Establish a never-ending connection and listen to signal."""
