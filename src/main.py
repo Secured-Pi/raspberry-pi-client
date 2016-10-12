@@ -3,6 +3,7 @@
 from __future__ import print_function
 from lock import RPiLock
 from user import User
+import sys
 import logging
 import getpass
 logging.getLogger('socketIO-client').setLevel(logging.DEBUG)
@@ -28,4 +29,8 @@ def main():
     rpi_lock.listen_for_io_signal()
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print('Client connection terminated.')
+        sys.exit(0)

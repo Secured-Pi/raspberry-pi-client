@@ -1,5 +1,6 @@
 # coding: utf-8
 import requests
+import sys
 
 
 class RPiLock(object):
@@ -71,7 +72,7 @@ class RPiLock(object):
             'location': location,
             'serial': self.serial,
             'status': 'pending'
-        },
+        }
         added_lock = requests.post(
             req_url,
             auth=requests.auth.HTTPBasicAuth(
