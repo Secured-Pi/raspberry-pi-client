@@ -19,7 +19,7 @@ FACE_CASCADE = cv2.CascadeClassifier(CASCADE_MODEL)
 log.basicConfig(filename='entries.log', level=log.INFO)
 TOKEN = 'test-token'
 SERVER, PORT = 'http://54.186.97.121', 8000
-API_ENDPT = '/api/locks/events'
+API_ENDPT = '/api/events/'
 
 
 def get_serial():
@@ -34,30 +34,32 @@ def get_serial():
     return serial
 
 
-def send_img_to_server(img_filename='testing.gif', server=SERVER, port=PORT, token=TOKEN):
+def send_img_to_server(img_filename='testing.gif', server=SERVER, port=PORT,
+                       token=TOKEN):
     """Send a POST request to the main server.
 
     The request should contain the image, as well as a token.
     """
-    # TODO:
-    # build/format the request to send to the Django server
-    # include: img, token, serial, RFID
-    data = {}
-    data['lock_id']
-    data['token'] = token
-    data['serial'] = get_serial()
-    data['RFID'] = ''
-
+    # headers = {'X-Requested-With': 'Python requests', 'Content-type': 'image/gif'}
     with open('testing.gif', 'rb') as f:
-        files = {'image': ('testing.gif', f, 'image/gif')}
+        data = {
+            'lock_id': '4',
+            'token': token,
+            'serial': 'testing123',
+            'RFID': '',
+            # 'photo': f,
+        }
+    files = {'photo': open('testing.gif', 'rb')}
+    response = requests.post(server + ':' + str(PORT) + API_ENDPT,
+                             files=files, data=data)
 
-    response = requests.post(server + ':' +str(PORT) + API_ENDPT, data=data, files=files)
-    if response.status_code == 200:
+    if response.status_code == 201:
         print('image sent to server!')
         return(response)
     else:
         print('there was an error')
-        return response
+        print('status code: ', response.status_code)
+        return response.reason
 
 
 def begin_watch(debug=False):
@@ -96,7 +98,7 @@ def begin_watch(debug=False):
                 im = Image.open('testing.png')
                 im.save('testing.gif')
                 print('picture taken!')
-                send_img_to_server('testing.gif')
+                send_img_to_server('testing.gif', token=TOKEN)
                 log.info(str(dt.datetime.now()) + ' :: face found.')
 
         if debug:
