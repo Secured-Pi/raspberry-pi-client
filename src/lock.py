@@ -34,7 +34,7 @@ class RPiLock(object):
         return serial
 
     def get_lock_id(self):
-        print('Getting lock info...', end='')
+        print('Getting lock info...')
         req_url = 'http://{}:{}/api/locks/'.format(self.server, self.port)
         all_locks = requests.get(
             req_url,
@@ -50,28 +50,37 @@ class RPiLock(object):
         else:
             print('NOT FOUND')
             print('Follow the prompt to register new lock:')
+            print('Press CONTROL-C to quit at anytime')
             return self.self_register()
-            
-	
 
     def self_register(self):
         """Register a lock if it's not in user's lock list."""
         req_url = 'http://{}:{}/api/locks/'.format(
             self.server, self.port,
         )
-        return requests.post(
+        while True:
+            name = input('Name (required): ')
+            if name:
+                break
+        while True:
+            location = input('Location (required): ')
+            if location:
+                break
+        json = {
+            'name': name,
+            'location': location,
+            'serial': self.serial,
+            'status': 'pending'
+        },
+        added_lock = requests.post(
             req_url,
             auth=requests.auth.HTTPBasicAuth(
                 self.user.username,
                 self.user.password
             ),
-            json={
-                'name': name,
-                'location': location,
-                'serial': self.serial,
-                'status': 'pending'
-            },
-        )
+            json=json
+        ).json()
+        return added_lock['pk']
 
     def update_serverside_status(self, action):
         """Update lock status on central server."""
