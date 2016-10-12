@@ -51,7 +51,7 @@ class RPiLock(object):
         req_url = 'http://{}:{}/api/locks/{}/'.format(
             self.server, self.port, self.lock_id
         )
-        return requests.post(
+        return requests.patch(
             req_url,
             auth=requests.auth.HTTPBasicAuth(
                 self.user.username,
