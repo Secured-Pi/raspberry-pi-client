@@ -23,6 +23,7 @@ API_ENDPT = '/api/events/'
 
 
 def get_serial():
+    """Get serial number of Raspberry Pi."""
     from io import open
     serial = None
     with open('/proc/cpuinfo', 'r') as fh:
@@ -34,27 +35,23 @@ def get_serial():
     return serial
 
 
-def send_img_to_server(img_filename='testing.gif', server=SERVER, port=PORT,
-                       token=TOKEN):
+def send_img_to_server(img_filename, server, port, token):
     """Send a POST request to the main server.
 
     The request should contain the image, as well as a token.
     """
-    # headers = {'X-Requested-With': 'Python requests', 'Content-type': 'image/gif'}
-    with open('testing.gif', 'rb') as f:
-        data = {
-            'lock_id': '4',
-            'token': token,
-            'serial': 'testing123',
-            'RFID': '',
-            # 'photo': f,
-        }
-    files = {'photo': open('testing.gif', 'rb')}
+    data = {
+        'lock_id': '4',
+        'token': token,
+        'serial': get_serial(),
+        'RFID': '',
+    }
+    files = {'photo': open(img_filename, 'rb')}
     response = requests.post(server + ':' + str(PORT) + API_ENDPT,
                              files=files, data=data)
 
     if response.status_code == 201:
-        print('image sent to server!')
+        print('image sent to server for verification!')
         return(response)
     else:
         print('there was an error')
@@ -62,12 +59,13 @@ def send_img_to_server(img_filename='testing.gif', server=SERVER, port=PORT,
         return response.reason
 
 
-def begin_watch(debug=False):
+def begin_watch(server=SERVER, port=PORT, token=TOKEN, debug=False):
     """Begin watching the camera for visitors.
 
     If a person's face is found, it is saved as a file and then send off
     to ther server to be validated.  When debug is True, the camera
-    output is displayed on the screen.
+    output is displayed on the screen.  Server, port, and token are passed
+    to the send_img_to_server function.
     """
     video_capture = cv2.VideoCapture(0)
     video_capture.set(3, 640)
@@ -98,14 +96,11 @@ def begin_watch(debug=False):
                 im = Image.open('testing.png')
                 im.save('testing.gif')
                 print('picture taken!')
-                send_img_to_server('testing.gif', token=TOKEN)
+                send_img_to_server('testing.gif', server, port, token)
                 log.info(str(dt.datetime.now()) + ' :: face found.')
 
         if debug:
-            cv2.imshow('Video', gray)   # black and white
-
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
+            cv2.imshow('Video', gray)
 
     video_capture.release()
     if debug:
