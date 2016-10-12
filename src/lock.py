@@ -8,10 +8,10 @@ class RPiLock(object):
         """RPiLock instance with socketio connection."""
         import pigpio
         self.user = user
+        self.server, self.port = server, port
+        self.model = model
         self.serial = self.get_serial()
         self.lock_id = self.get_lock_id()
-        self.model = model
-        self.server, self.port = server, port
         self.pi = pigpio.pi()
         self.avail_actions = {
             'unlock': 600,
