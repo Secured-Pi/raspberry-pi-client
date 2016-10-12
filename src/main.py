@@ -19,6 +19,7 @@ def verify_user(server, port=None):
         if res.status_code == 200:
             print('Secured Pi accepts you!')
             return user
+        print('Can\'t authenticate')
 
 
 def main():
