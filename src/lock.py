@@ -72,8 +72,7 @@ class RPiLock(object):
             self,
             'control_{}'.format(self.model)
         )(data['action'])
-        data['']
-        self.update_serverside_status(data)
+        # self.update_serverside_status(data)
 
     def listen_for_io_signal(self):
         """Establish a never-ending connection and listen to signal."""
