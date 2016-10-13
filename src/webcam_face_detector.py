@@ -13,7 +13,7 @@ import datetime as dt
 from PIL import Image
 import requests
 import time
-#from rfid import get_RFID
+from rfid import get_RFID
 
 
 CASCADE_MODEL = 'haarcascade_frontalface_default.xml'
@@ -71,7 +71,6 @@ def begin_watch(server=SERVER, port=PORT, debug=False):
     to the send_img_to_server function.
     """
     RFID = get_RFID()
-    RFID = 'someRFIDyo'
     video_capture = cv2.VideoCapture(0)
     video_capture.set(3, 640)
     video_capture.set(4, 480)
@@ -104,8 +103,9 @@ def begin_watch(server=SERVER, port=PORT, debug=False):
             send_img_to_server('testing.gif', server, port, RFID)
             images_taken += 1
             log.info(str(dt.datetime.now()) + ' :: face found.')
-
-        cv2.imshow('frame', gray)
+		
+		if debug:
+			cv2.imshow('frame', gray)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 	
