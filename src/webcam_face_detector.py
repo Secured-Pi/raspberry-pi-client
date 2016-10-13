@@ -74,12 +74,14 @@ def begin_watch(server=SERVER, port=PORT, debug=False):
     video_capture.set(3, 640)
     video_capture.set(4, 480)
     num_faces_state = 0
+    images_taken = 0
     RFID = 'unread'
 
     RFID = get_RFID()
 
     while True:
-
+        if images_taken > 5:
+            break
         ret, frame = video_capture.read()
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         faces = FACE_CASCADE.detectMultiScale(
@@ -104,11 +106,12 @@ def begin_watch(server=SERVER, port=PORT, debug=False):
                 im.save('testing.gif')
                 print('picture taken!')
                 send_img_to_server('testing.gif', server, port, RFID)
+                images_taken += 1
                 log.info(str(dt.datetime.now()) + ' :: face found.')
 
         if debug:
             cv2.imshow('Video', gray)
-
+	
     video_capture.release()
     if debug:
         cv2.destroyAllWindows()
