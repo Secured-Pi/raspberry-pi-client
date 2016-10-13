@@ -78,7 +78,7 @@ def begin_watch(server=SERVER, port=PORT, debug=False):
     images_taken = 0
 
     while True:
-        if images_taken > 1:
+        if images_taken > 5:
             break
     
         ret, frame = video_capture.read()
@@ -97,10 +97,8 @@ def begin_watch(server=SERVER, port=PORT, debug=False):
         if len(faces) == 1:
             time.sleep(1)
             cv2.imwrite('testing.png', gray)
-            im = Image.open('testing.png')
-            im.save('testing.gif')
             print('picture taken!')
-            send_img_to_server('testing.gif', server, port, RFID)
+            send_img_to_server('testing.png', server, port, RFID)
             images_taken += 1
             log.info(str(dt.datetime.now()) + ' :: face found.')
 		
