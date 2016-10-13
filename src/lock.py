@@ -34,6 +34,7 @@ class RPiLock(object):
         return serial
 
     def get_lock_id(self):
+        print('Getting lock info...')
         req_url = 'http://{}:{}/api/locks/'.format(self.server, self.port)
         all_locks = requests.get(
             req_url,
@@ -44,21 +45,70 @@ class RPiLock(object):
         ).json()
         for lock in all_locks:
             if lock['serial'] == self.serial:
+                print('DONE')
                 return lock['pk']
+        else:
+            print('NOT FOUND')
+            print('Follow the prompt to register new lock:')
+            print('Press CONTROL-C to quit at anytime')
+            return self.self_register()
 
-    def update_serverside_status(self, action):
-        """Update lock status on central server."""
-        req_url = 'http://{}:{}/api/locks/{}/'.format(
-            self.server, self.port, self.lock_id
+    def self_register(self):
+        """Register a lock if it's not in user's lock list."""
+        req_url = 'http://{}:{}/api/locks/'.format(
+            self.server, self.port,
         )
-        return requests.patch(
+        while True:
+            name = input('Name (required): ')
+            if name:
+                break
+        while True:
+            location = input('Location (required): ')
+            if location:
+                break
+        json = {
+            'name': name,
+            'location': location,
+            'serial': self.serial,
+            'active': True,
+            'status': 'pending'
+        }
+        added_lock = requests.post(
             req_url,
             auth=requests.auth.HTTPBasicAuth(
                 self.user.username,
                 self.user.password
             ),
-            json={'status': action + 'ed'},
+            json=json
+        ).json()
+        return added_lock['pk']
+
+    def update_serverside_status(self, data):
+        """Update lock status on central server."""
+        lock_url = 'http://{}:{}/api/locks/{}/'.format(
+            self.server, self.port, self.lock_id
         )
+        event_url = 'http://{}:{}/api/events/{}/'.format(
+            self.server, self.port, data['event_id']
+        )
+        return {
+            'lock_res': requests.patch(
+                            lock_url,
+                            auth=requests.auth.HTTPBasicAuth(
+                                self.user.username,
+                                self.user.password
+                            ),
+                            json={'status': data['action'] + 'ed'},
+                        ),
+            'event_res': requests.patch(
+                            event_url,
+                            auth=requests.auth.HTTPBasicAuth(
+                                self.user.username,
+                                self.user.password
+                            ),
+                            json={'status': data['action'] + 'ed'},
+                        )
+        }
 
     def control_motorized(self, action, pin_num=18):
         """
@@ -79,7 +129,9 @@ class RPiLock(object):
             self,
             'control_{}'.format(self.model)
         )(data['action'])
-        self.update_serverside_status(data['action'])
+        self.update_serverside_status({
+            'action': data['action'], 'event_id': data['event_id']
+        })
 
     def listen_for_io_signal(self):
         """Establish a never-ending connection and listen to signal."""
