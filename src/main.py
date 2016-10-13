@@ -32,5 +32,5 @@ if __name__ == '__main__':
     try:
         main()
     except KeyboardInterrupt:
-        print('Client connection terminated.')
+        print('\nClient connection terminated.')
         sys.exit(0)
