@@ -13,14 +13,14 @@ import datetime as dt
 from PIL import Image
 import requests
 import time
-from rfid import get_rfid
+from rfid import get_RFID
 
 
 CASCADE_MODEL = 'haarcascade_frontalface_default.xml'
 FACE_CASCADE = cv2.CascadeClassifier(CASCADE_MODEL)
 log.basicConfig(filename='entries.log', level=log.INFO)
 TOKEN = 'test-token'
-SERVER, PORT = 'http://54.186.97.121', 8000
+SERVER, PORT = 'http://54.186.97.121', 80
 API_ENDPT = '/api/events/'
 
 
@@ -37,31 +37,32 @@ def get_serial():
     return serial
 
 
-def send_img_to_server(img_filename, server, port, RFID, token):
+def send_img_to_server(img_filename, server, port, RFID, username='user100', password='user100password'):
     """Send a POST request to the main server.
 
     The request should contain the image, as well as a token.
     """
     data = {
         'lock_id': '4',
-        'token': token,
-        'serial': get_serial(),
+        'serial': 'testwsetset',
         'RFID': RFID,
+        'mtype': 'fr',
     }
+    auth=(username, password)
     files = {'photo': open(img_filename, 'rb')}
-    response = requests.post(server + ':' + str(PORT) + API_ENDPT,
-                             files=files, data=data)
-
+    response = requests.post(server + API_ENDPT,
+                             files=files, data=data, auth=requests.auth.HTTPBasicAuth('user100','user100password'))
     if response.status_code == 201:
         print('image sent to server for verification!')
         return(response)
     else:
+        import pdb;pdb.set_trace()
         print('there was an error')
         print('status code: ', response.status_code)
         return response.reason
 
 
-def begin_watch(server=SERVER, port=PORT, token=TOKEN, debug=False):
+def begin_watch(server=SERVER, port=PORT, debug=False):
     """Begin watching the camera for visitors.
 
     If a person's face is found, it is saved as a file and then send off
@@ -102,7 +103,7 @@ def begin_watch(server=SERVER, port=PORT, token=TOKEN, debug=False):
                 im = Image.open('testing.png')
                 im.save('testing.gif')
                 print('picture taken!')
-                send_img_to_server('testing.gif', server, port, RFID, token)
+                send_img_to_server('testing.gif', server, port, RFID)
                 log.info(str(dt.datetime.now()) + ' :: face found.')
 
         if debug:
