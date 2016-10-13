@@ -27,7 +27,7 @@ def get_RFID():
                 MIFAREReader.MFRC522_Read(8)
                 MIFAREReader.MFRC522_StopCrypto1()
                 looking = False
-    print('returning uid: ', uid)
+    print('returning uid: ', str(uid))
     return str(uid)
 
 
