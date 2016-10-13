@@ -100,3 +100,9 @@ src/testing.gif
 haarcascade_frontalface_default.xml
 
 nohup.out
+
+bin/
+lib64
+pip-selfcheck.json
+pyvenv.cfg
+share/
