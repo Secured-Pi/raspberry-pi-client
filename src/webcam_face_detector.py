@@ -104,7 +104,7 @@ def begin_watch(server=SERVER, port=PORT, debug=False):
             images_taken += 1
             log.info(str(dt.datetime.now()) + ' :: face found.')
 		
-		if debug:
+        if debug:
 			cv2.imshow('frame', gray)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
