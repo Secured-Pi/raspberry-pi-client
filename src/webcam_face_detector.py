@@ -13,7 +13,7 @@ import datetime as dt
 from PIL import Image
 import requests
 import time
-from rfid import get_RFID
+#from rfid import get_RFID
 
 
 CASCADE_MODEL = 'haarcascade_frontalface_default.xml'
@@ -70,18 +70,18 @@ def begin_watch(server=SERVER, port=PORT, debug=False):
     output is displayed on the screen.  Server, port, and token are passed
     to the send_img_to_server function.
     """
+    RFID = get_RFID()
+    RFID = 'someRFIDyo'
     video_capture = cv2.VideoCapture(0)
     video_capture.set(3, 640)
     video_capture.set(4, 480)
     num_faces_state = 0
     images_taken = 0
-    RFID = 'unread'
-
-    RFID = get_RFID()
 
     while True:
-        if images_taken > 5:
+        if images_taken > 1:
             break
+    
         ret, frame = video_capture.read()
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         faces = FACE_CASCADE.detectMultiScale(
@@ -95,22 +95,19 @@ def begin_watch(server=SERVER, port=PORT, debug=False):
             for (x, y, w, h) in faces:
                 cv2.rectangle(gray, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
-        # for logging
-        # print(num_faces_state)
-        if num_faces_state != len(faces):
-            num_faces_state = len(faces)
-            if num_faces_state == 1:
-                time.sleep(1)
-                cv2.imwrite('testing.png', gray)
-                im = Image.open('testing.png')
-                im.save('testing.gif')
-                print('picture taken!')
-                send_img_to_server('testing.gif', server, port, RFID)
-                images_taken += 1
-                log.info(str(dt.datetime.now()) + ' :: face found.')
+        if len(faces) == 1:
+            time.sleep(1)
+            cv2.imwrite('testing.png', gray)
+            im = Image.open('testing.png')
+            im.save('testing.gif')
+            print('picture taken!')
+            send_img_to_server('testing.gif', server, port, RFID)
+            images_taken += 1
+            log.info(str(dt.datetime.now()) + ' :: face found.')
 
-        if debug:
-            cv2.imshow('Video', gray)
+        cv2.imshow('frame', gray)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
 	
     video_capture.release()
     if debug:
