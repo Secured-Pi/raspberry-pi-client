@@ -1,0 +1,38 @@
+WARNING:socketIO-client:52.43.75.183:5000/socket.io [engine.io waiting for connection] HTTPConnectionPool(host='52.43.75.183', port=5000): Max retries exceeded with url: /socket.io/?transport=polling&EIO=3&t=1476138824180-0 (Caused by NewConnectionError('<requests.packages.urllib3.connection.HTTPConnection object at 0x7639ead0>: Failed to establish a new connection: [Errno 111] Connection refused',))
+WARNING:socketIO-client:52.43.75.183:5000/socket.io [engine.io waiting for connection] HTTPConnectionPool(host='52.43.75.183', port=5000): Max retries exceeded with url: /socket.io/?transport=polling&EIO=3&t=1476138825217-0 (Caused by NewConnectionError('<requests.packages.urllib3.connection.HTTPConnection object at 0x7639c570>: Failed to establish a new connection: [Errno 111] Connection refused',))
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Can't connect to pigpio at localhost(8888)
+
+Did you start the pigpio daemon? E.g. sudo pigpiod
+
+Did you specify the correct Pi host/port in the environment
+variables PIGPIO_ADDR/PIGPIO_PORT?
+E.g. export PIGPIO_ADDR=soft, export PIGPIO_PORT=8888
+
+Did you specify the correct Pi host/port in the
+pigpio.pi() function? E.g. pigpio.pi('soft', 8888))
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Traceback (most recent call last):
+  File "main.py", line 12, in <module>
+    main()
+  File "main.py", line 9, in main
+    rpi_lock.listen_to_signal()
+  File "/home/pi/secured-pi/raspberry-pi-client/src/lock.py", line 29, in listen_to_signal
+    self.io_client.wait()
+  File "/home/pi/secured-pi/raspberry-pi-client/venv/lib/python3.4/site-packages/socketIO_client/__init__.py", line 251, in wait
+    self._process_packets()
+  File "/home/pi/secured-pi/raspberry-pi-client/venv/lib/python3.4/site-packages/socketIO_client/__init__.py", line 278, in _process_packets
+    self._process_packet(engineIO_packet)
+  File "/home/pi/secured-pi/raspberry-pi-client/venv/lib/python3.4/site-packages/socketIO_client/__init__.py", line 487, in _process_packet
+    delegate(parse_socketIO_packet_data(socketIO_packet_data), namespace)
+  File "/home/pi/secured-pi/raspberry-pi-client/venv/lib/python3.4/site-packages/socketIO_client/__init__.py", line 509, in _on_event
+    namespace._find_packet_callback(event)(*args)
+  File "/home/pi/secured-pi/raspberry-pi-client/src/lock.py", line 28, in <lambda>
+    self.io_client.on('lock', lambda x: self.control('lock'))
+  File "/home/pi/secured-pi/raspberry-pi-client/src/lock.py", line 22, in control
+    self.pi.set_servo_pulsewidth(pin_num, pulsewidth)
+  File "/usr/lib/python3/dist-packages/pigpio.py", line 1320, in set_servo_pulsewidth
+    self.sl, _PI_CMD_SERVO, user_gpio, int(pulsewidth)))
+  File "/usr/lib/python3/dist-packages/pigpio.py", line 848, in _pigpio_command
+    sl.s.send(struct.pack('IIII', cmd, p1, p2, 0))
+AttributeError: 'NoneType' object has no attribute 'send'
