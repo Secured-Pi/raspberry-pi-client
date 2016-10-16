@@ -1,4 +1,4 @@
-"""Test module for webcam_face_dettector."""
+"""Test module for webcam_face_detector."""
 
 from webcam_face_detector import SERVER, PORT, send_img_to_server
 
