@@ -37,34 +37,26 @@ def get_serial():
     return serial
 
 
-def send_relock_req():
-	client = requests.session()
-	client.get('http://54.186.97.121/locks/manual-lock/4/')
-	csrf = client.cookies['csrftoken']
-	login_data = dict(username='David', password='davidpassword', csrfmiddlewaretoken=csrf)
-	r = client.post('http://54.186.97.121/locks/manual-lock/4/', data=login_data)
-
-
-def send_img_to_server(img_filename, server, port, RFID, username='David', password='davidpassword'):
+def send_img_to_server(img_filename, server, port, RFID, username='David',
+                       password='davidpassword'):
     """Send a POST request to the main server.
 
     The request should contain the image, as well as a token.
     """
     data = {
         'lock_id': '4',
-        'serial': 'testwsetset',
+        'serial': get_serial(),
         'RFID': RFID,
         'mtype': 'fr',
     }
-    auth=(username, password)
     files = {'photo': open(img_filename, 'rb')}
     response = requests.post(server + port + API_ENDPT,
-                             files=files, data=data, auth=requests.auth.HTTPBasicAuth('David','davidpassword'))
+                             files=files, data=data,
+                             auth=requests.auth.HTTPBasicAuth(username, password))
     if response.status_code == 201:
         print('image sent to server for verification!')
         return(response)
     else:
-        import pdb;pdb.set_trace()
         print('there was an error')
         print('status code: ', response.status_code)
         return response.reason
@@ -84,14 +76,14 @@ def begin_watch(server=SERVER, port=PORT, debug=False):
     x = 0
     # TODO:  make the while loop continuous and not bug out, with RFID to
     # relock if the timer cannot be implemented well.
-    while x == 0:
+    while True:
         RFID = get_RFID()
         images_taken = 0
 
         while True:
             if images_taken > 5:
                 break
-    
+
             ret, frame = video_capture.read()
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             faces = FACE_CASCADE.detectMultiScale(
@@ -112,18 +104,17 @@ def begin_watch(server=SERVER, port=PORT, debug=False):
                 send_img_to_server('testing.png', server, port, RFID)
                 images_taken += 1
                 log.info(str(dt.datetime.now()) + ' :: face found.')
-		
+
             if debug:
                 cv2.imshow('frame', gray)
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
         x = 1
         video_capture.release()
-        
-        #RFID = get_RFID()
-        #send_relock_req()
+
+        RFID = get_RFID()
     if debug:
-      cv2.destroyAllWindows()
+        cv2.destroyAllWindows()
 
 if __name__ == '__main__':
-  begin_watch()
+    begin_watch()
