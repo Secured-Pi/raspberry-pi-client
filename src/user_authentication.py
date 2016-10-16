@@ -1,9 +1,9 @@
 """
-This module contains code related to the webcam on the Raspberry-Pi.
+This module contains code related verification on the Raspberry-Pi.
 
-The begin_watch function initializes the webcam and begin looking for a
-face.  Once a face is found, the image is sent to the server to be validated.
-Some parts adapted from:
+The begin_watch function initializes the RFID scanner and webcam, then begins
+looking for a face after an RFID is scanned.  Once a face is found, the
+image is sent to the server to be validated. Some parts adapted from:
 https://pythonprogramming.net/loading-video-python-opencv-tutorial/
 """
 
@@ -62,9 +62,9 @@ def send_img_to_server(img_filename, server, port, RFID, username='David',
 
 
 def begin_watch(server=SERVER, port=PORT, debug=False):
-    """Begin watching the camera for visitors.
+    """Begin watching the RFID scanner and camera for visitors.
 
-    If a person's face is found, it is saved as a file and then send off
+    If a person's face is found, it is saved as a file and then sent off
     to ther server to be validated.  When debug is True, the camera
     output is displayed on the screen.  Server and port are passed to the
     send_img_to_server function.

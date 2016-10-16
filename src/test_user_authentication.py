@@ -1,6 +1,6 @@
 """Test module for webcam_face_detector."""
 
-from webcam_face_detector import SERVER, PORT, send_img_to_server
+from user_authentication import SERVER, PORT, send_img_to_server
 
 
 def test_send_img_to_server():
