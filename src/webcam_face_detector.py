@@ -10,7 +10,6 @@ https://pythonprogramming.net/loading-video-python-opencv-tutorial/
 import cv2
 import logging as log
 import datetime as dt
-from PIL import Image
 import requests
 import time
 from rfid import get_RFID
@@ -19,7 +18,6 @@ from rfid import get_RFID
 CASCADE_MODEL = 'haarcascade_frontalface_default.xml'
 FACE_CASCADE = cv2.CascadeClassifier(CASCADE_MODEL)
 log.basicConfig(filename='entries.log', level=log.INFO)
-TOKEN = 'test-token'
 SERVER, PORT = 'http://54.186.97.121', ''
 API_ENDPT = '/api/events/'
 
@@ -41,7 +39,8 @@ def send_img_to_server(img_filename, server, port, RFID, username='David',
                        password='davidpassword'):
     """Send a POST request to the main server.
 
-    The request should contain the image, as well as a token.
+    The request should contain the image, as well as the username and
+    password for the user's account.
     """
     data = {
         'lock_id': '4',
@@ -67,8 +66,8 @@ def begin_watch(server=SERVER, port=PORT, debug=False):
 
     If a person's face is found, it is saved as a file and then send off
     to ther server to be validated.  When debug is True, the camera
-    output is displayed on the screen.  Server, port, and token are passed
-    to the send_img_to_server function.
+    output is displayed on the screen.  Server and port are passed to the
+    send_img_to_server function.
     """
     video_capture = cv2.VideoCapture(0)
     video_capture.set(3, 640)
