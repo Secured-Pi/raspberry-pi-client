@@ -112,6 +112,22 @@ class LockTestCase(unittest.TestCase):
     def test_self_register(self, req):
         self.assertTrue(self.lock.self_register(), 2)
 
+    def test_lock_user_init(self):
+        self.assertTrue(
+            'username' and 'password' in dir(self.user)
+        )
+
+    @patch(
+        'requests.head',
+        return_value=MagicMock(
+            spec=Response,
+            status_code=200,
+            response=json.dumps({})
+        )
+    )
+    def test_lock_user_login(self, req):
+        self.assertEqual(self.user.login().status_code, 200)
+
 
 if __name__ == '__main__':
     unittest.main()
