@@ -1,5 +1,5 @@
 """
-This module contains code related verification on the Raspberry-Pi.
+This module contains code related to verification on the Raspberry-Pi.
 
 The begin_watch function initializes the RFID scanner and webcam, then begins
 looking for a face after an RFID is scanned.  Once a face is found, the
