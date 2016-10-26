@@ -108,7 +108,6 @@ def begin_watch(server=SERVER, port=PORT, debug=False):
                 cv2.imshow('frame', gray)
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
-        x = 1
         video_capture.release()
 
         RFID = get_RFID()
