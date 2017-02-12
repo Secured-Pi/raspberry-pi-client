@@ -8,10 +8,11 @@ import logging
 import getpass
 logging.getLogger('socketIO-client').setLevel(logging.DEBUG)
 
-SERVER, PORT = '52.43.75.183', 8000
+SERVER, PORT = '52.43.75.183', 8000     # Flask server
 
 
 def verify_user(server, port=None):
+    """Verify a user."""
     while True:
         username = input('Secured Pi username: ')
         password = getpass.getpass()
@@ -24,9 +25,11 @@ def verify_user(server, port=None):
 
 
 def main():
+    """Verify user, listen for instructions from server."""
     user = verify_user(SERVER, PORT)
     rpi_lock = RPiLock(user, SERVER, PORT)
     rpi_lock.listen_for_io_signal()
+
 
 if __name__ == '__main__':
     try:
