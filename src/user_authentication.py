@@ -18,8 +18,8 @@ from rfid import get_RFID
 CASCADE_MODEL = 'haarcascade_frontalface_default.xml'
 FACE_CASCADE = cv2.CascadeClassifier(CASCADE_MODEL)
 log.basicConfig(filename='entries.log', level=log.INFO)
-SERVER, PORT = 'http://54.186.97.121', ''
 API_ENDPT = '/api/events/'
+SERVER, PORT = 'http://54.186.97.121', ''   # Django server
 
 
 def get_serial():
@@ -35,7 +35,7 @@ def get_serial():
     return serial
 
 
-def send_img_to_server(img_filename, server, port, RFID, username='David',
+def send_img_to_server(img_filename, server, port, rfid, username='David',
                        password='davidpassword'):
     """Send a POST request to the main server.
 
@@ -45,27 +45,28 @@ def send_img_to_server(img_filename, server, port, RFID, username='David',
     data = {
         'lock_id': '4',
         'serial': get_serial(),
-        'RFID': RFID,
+        'RFID': rfid,
         'mtype': 'fr',
     }
     files = {'photo': open(img_filename, 'rb')}
     response = requests.post(server + port + API_ENDPT,
                              files=files, data=data,
-                             auth=requests.auth.HTTPBasicAuth(username, password))
+                             auth=requests.auth.HTTPBasicAuth(username,
+                                                              password))
     if response.status_code == 201:
         print('image sent to server for verification!')
         return(response)
-    else:
-        print('there was an error')
-        print('status code: ', response.status_code)
-        return response.reason
+
+    print('there was an error')
+    print('status code: ', response.status_code)
+    return response.reason
 
 
 def begin_watch(server=SERVER, port=PORT, debug=False):
     """Begin watching the RFID scanner and camera for visitors.
 
     If a person's face is found, it is saved as a file and then sent off
-    to ther server to be validated.  When debug is True, the camera
+    to the server to be validated.  When debug is True, the camera
     output is displayed on the screen.  Server and port are passed to the
     send_img_to_server function.
     """
@@ -73,10 +74,11 @@ def begin_watch(server=SERVER, port=PORT, debug=False):
     video_capture.set(3, 640)
     video_capture.set(4, 480)
     x = 0
+
     # TODO:  make the while loop continuous and not bug out, with RFID to
     # relock if the timer cannot be implemented well.
     while True:
-        RFID = get_RFID()
+        rfid = get_RFID()
         images_taken = 0
 
         while True:
@@ -100,7 +102,7 @@ def begin_watch(server=SERVER, port=PORT, debug=False):
                 time.sleep(1)
                 cv2.imwrite('testing.png', gray)
                 print('picture taken!')
-                send_img_to_server('testing.png', server, port, RFID)
+                send_img_to_server('testing.png', server, port, rfid)
                 images_taken += 1
                 log.info(str(dt.datetime.now()) + ' :: face found.')
 
@@ -108,11 +110,12 @@ def begin_watch(server=SERVER, port=PORT, debug=False):
                 cv2.imshow('frame', gray)
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
-        video_capture.release()
 
-        RFID = get_RFID()
-    if debug:
-        cv2.destroyAllWindows()
+        video_capture.release()
+        rfid = get_RFID()
+
+        if debug:
+            cv2.destroyAllWindows()
 
 if __name__ == '__main__':
     begin_watch()
