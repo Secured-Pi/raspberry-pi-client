@@ -8,7 +8,6 @@ import logging
 import getpass
 logging.getLogger('socketIO-client').setLevel(logging.DEBUG)
 
-# SERVER, PORT = '52.43.75.183', 8000     # Django server
 SERVER, PORT = '192.168.1.109', 8000     # Django server, port
 FLASK_PORT = 5000
 
