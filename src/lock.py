@@ -1,6 +1,10 @@
 # coding: utf-8
 import requests
 
+try:
+    input = raw_input
+except:
+    pass
 
 class RPiLock(object):
     """RPiLock class, a representation of the physical lock."""
@@ -45,7 +49,8 @@ class RPiLock(object):
         ).json()
         for lock in all_locks:
             if lock['serial'] == self.serial:
-                print('DONE')
+                print('--DONE')
+                print('lock pk:', lock['pk'])
                 return lock['pk']
         else:
             print('NOT FOUND')
@@ -133,11 +138,13 @@ class RPiLock(object):
             'action': data['action'], 'event_id': data['event_id']
         })
 
-    def listen_for_io_signal(self):
+    def listen_for_io_signal(self, flask_port):
         """Establish a never-ending connection and listen to signal."""
         from socketIO_client import SocketIO
-        self.io_client = SocketIO(self.server, self.port)
-        self.io_client.emit('listening', {'serial': self.serial})
+        print('Listening for io signal...')
+        print('server:', self.server, flask_port)
+        self.io_client = SocketIO(self.server, flask_port)
+        self.io_client.emit(b'listening', {'serial': self.serial})
         self.io_client.on('unlock', self.handle_io_event)
         self.io_client.on('lock', self.handle_io_event)
         print('Now listening to central server')

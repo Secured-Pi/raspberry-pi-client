@@ -19,7 +19,7 @@ CASCADE_MODEL = 'haarcascade_frontalface_default.xml'
 FACE_CASCADE = cv2.CascadeClassifier(CASCADE_MODEL)
 log.basicConfig(filename='entries.log', level=log.INFO)
 API_ENDPT = '/api/events/'
-SERVER, PORT = 'http://54.186.97.121', ''   # Django server
+SERVER, PORT = 'http://192.168.1.109', '8000'   # Django server
 
 
 def get_serial():
@@ -49,7 +49,7 @@ def send_img_to_server(img_filename, server, port, rfid, username='David',
         'mtype': 'fr',
     }
     files = {'photo': open(img_filename, 'rb')}
-    response = requests.post(server + port + API_ENDPT,
+    response = requests.post(server + ':' + port + API_ENDPT,
                              files=files, data=data,
                              auth=requests.auth.HTTPBasicAuth(username,
                                                               password))
@@ -112,10 +112,9 @@ def begin_watch(server=SERVER, port=PORT, debug=False):
                 break
 
         video_capture.release()
-        rfid = get_RFID()
-
         if debug:
             cv2.destroyAllWindows()
+        rfid = get_RFID()
 
 if __name__ == '__main__':
-    begin_watch()
+    begin_watch(debug=True)
