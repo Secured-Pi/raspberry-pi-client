@@ -12,15 +12,22 @@ In that same virtual environment, run
 pip install -r requirements.txt
 ```
 
-then to register your account (assuming the Django server is running and
+and then to register your account (assuming the Django server is running and
 you have already made an account):
 ```
 python main.py
 ```
+You should then set a couple environmental variables LOCK_USER and LOCK_PW to match
+your account credentials for the user_authentication script to use.  I find it easiest
+to modify the ~/.profile file by adding to the bottom:
+```
+export LOCK_USER='some_username'
+export LOCK_PW='some_password'
+```
 
-to register your lock.  After that, you can log back in as your normal account
-and see your lock on the dashboard.  Then, go to your Django site and set the lock
-to active by clicking 'Edit Details'.
+After that, you can log back in on the Django site as your normal account and
+see your lock on the dashboard.  Then, set the lock to active by clicking
+'Edit Details'.
 
 You can also add your RFID code if you know the number by logging into the admin site.
 You can find the code by running python user_authentication.py and looking at the output.
