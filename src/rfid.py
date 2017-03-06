@@ -7,7 +7,6 @@ import RPi.GPIO as GPIO
 import MFRC522
 import signal
 import sys
-import signal
 
 
 def get_RFID():
