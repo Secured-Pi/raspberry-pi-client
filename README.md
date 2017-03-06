@@ -35,8 +35,14 @@ You can also add your RFID code if you know the number by logging into the admin
 You can find the code by running python user_authentication.py and looking at the output.
 
 After verifying that the unlock/lock buttons work, you can try to use the
-user authentication by running the script in a separate terminal window on the RPi
+user authentication.
+
+IMPORTANT!  Make sure that you put change the lock_id value in the send_img_to_server
+function to match the ID of your lock!  You can find this in the terminal window where
+you are running the main.py script.  It will most likely be '1' for you.
+
+run the script in a separate terminal window on the RPi, making sure to be in the
+src directory.
 ```
 python user_authentication.py
 ```
-
