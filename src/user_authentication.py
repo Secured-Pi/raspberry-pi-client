@@ -12,6 +12,7 @@ import logging as log
 import datetime as dt
 import requests
 import time
+import os
 from rfid import get_RFID
 
 
@@ -35,15 +36,15 @@ def get_serial():
     return serial
 
 
-def send_img_to_server(img_filename, server, port, rfid, username='David',
-                       password='davidpassword'):
+def send_img_to_server(img_filename, server, port, rfid, username,
+                       password):
     """Send a POST request to the main server.
 
     The request should contain the image, as well as the username and
     password for the user's account.
     """
     data = {
-        'lock_id': '4',
+        'lock_id': '2',
         'serial': get_serial(),
         'RFID': rfid,
         'mtype': 'fr',
@@ -62,7 +63,7 @@ def send_img_to_server(img_filename, server, port, rfid, username='David',
     return response.reason
 
 
-def begin_watch(server=SERVER, port=PORT, debug=False):
+def begin_watch(server=SERVER, port=PORT, debug=False, username=None, password=None):
     """Begin watching the RFID scanner and camera for visitors.
 
     If a person's face is found, it is saved as a file and then sent off
@@ -70,6 +71,9 @@ def begin_watch(server=SERVER, port=PORT, debug=False):
     output is displayed on the screen.  Server and port are passed to the
     send_img_to_server function.
     """
+    if not username or not password:
+        print('No username/pw supplied!  Exiting.')
+        return
     video_capture = cv2.VideoCapture(0)
     video_capture.set(3, 640)
     video_capture.set(4, 480)
@@ -102,7 +106,7 @@ def begin_watch(server=SERVER, port=PORT, debug=False):
                 time.sleep(1)
                 cv2.imwrite('testing.png', gray)
                 print('picture taken!')
-                send_img_to_server('testing.png', server, port, rfid)
+                send_img_to_server('testing.png', server, port, rfid, username, password)
                 images_taken += 1
                 log.info(str(dt.datetime.now()) + ' :: face found.')
 
@@ -117,4 +121,6 @@ def begin_watch(server=SERVER, port=PORT, debug=False):
         rfid = get_RFID()
 
 if __name__ == '__main__':
-    begin_watch(debug=True)
+    user = os.environ.get('LOCK_USER')
+    password = os.environ.get('LOCK_PW')
+    begin_watch(debug=True, username=user, password=password)
