@@ -39,7 +39,8 @@ user authentication.
 
 IMPORTANT!  Make sure that you put change the lock_id value in the send_img_to_server
 function to match the ID of your lock!  You can find this in the terminal window where
-you are running the main.py script.  It will most likely be '1' for you.
+you are running the main.py script (lock pk), or on the Django site.  It will most
+likely be '1' for you.
 
 run the script in a separate terminal window on the RPi, making sure to be in the
 src directory.
