@@ -17,6 +17,8 @@ you have already made an account):
 ```
 python main.py
 ```
+Keep this script running, as it is listening to teh Flask server for instructions.
+
 You should then set a couple environmental variables LOCK_USER and LOCK_PW to match
 your account credentials for the user_authentication script to use.  I find it easiest
 to modify the ~/.profile file by adding to the bottom:
@@ -33,7 +35,7 @@ You can also add your RFID code if you know the number by logging into the admin
 You can find the code by running python user_authentication.py and looking at the output.
 
 After verifying that the unlock/lock buttons work, you can try to use the
-user authentication by running
+user authentication by running the script in a separate terminal window on the RPi
 ```
 python user_authentication.py
 ```
