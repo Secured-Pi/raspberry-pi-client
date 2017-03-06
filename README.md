@@ -31,8 +31,6 @@ see your lock on the dashboard.  Then, set the lock to active by clicking
 
 You can also add your RFID code if you know the number by logging into the admin site.
 You can find the code by running python user_authentication.py and looking at the output.
-Of course, it will fail the first time.  This is only temporary and will be changed in
-the future.
 
 After verifying that the unlock/lock buttons work, you can try to use the
 user authentication by running
