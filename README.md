@@ -9,14 +9,13 @@ http://www.pyimagesearch.com/2016/04/18/install-guide-raspberry-pi-3-raspbian-je
 
 In that same virtual environment, run
 ```
-pip2 install -r requirements.txt
 pip install -r requirements.txt
 ```
 
 then to register your account (assuming the Django server is running and
 you have already made an account):
 ```
-python2 main.py
+python main.py
 ```
 
 to register your lock.  THEN, go to your Django site as the admin and
