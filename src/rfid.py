@@ -7,6 +7,7 @@ import RPi.GPIO as GPIO
 import MFRC522
 import signal
 import sys
+import signal
 
 
 def get_RFID():
@@ -15,6 +16,8 @@ def get_RFID():
         global continue_reading
         continue_reading = False
         GPIO.cleanup()
+        sys.exit(0)
+
     try:
         signal.signal(signal.SIGINT, end_read)
         MIFAREReader = MFRC522.MFRC522()
@@ -34,6 +37,7 @@ def get_RFID():
                     MIFAREReader.MFRC522_Read(8)
                     MIFAREReader.MFRC522_StopCrypto1()
                     looking = False
+
         print('returning uid: ', str(uid))
         return str(uid)
     except KeyboardInterrupt:
