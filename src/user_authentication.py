@@ -44,7 +44,7 @@ def send_img_to_server(img_filename, server, port, rfid, username,
     password for the user's account.
     """
     data = {
-        'lock_id': '5',
+        'lock_id': '1',
         'serial': get_serial(),
         'RFID': rfid,
         'mtype': 'fr',
