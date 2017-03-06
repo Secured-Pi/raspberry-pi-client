@@ -90,32 +90,33 @@ def begin_watch(server=SERVER, port=PORT, debug=False, username=None, password=N
                 break
 
             ret, frame = video_capture.read()
-            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            faces = FACE_CASCADE.detectMultiScale(
-                gray,
-                scaleFactor=1.1,
-                minNeighbors=5,
-                minSize=(30, 30)
-            )
+            if ret:
+                gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+                faces = FACE_CASCADE.detectMultiScale(
+                    gray,
+                    scaleFactor=1.1,
+                    minNeighbors=5,
+                    minSize=(30, 30)
+                )
 
-            if debug:
-                for (x, y, w, h) in faces:
-                    cv2.rectangle(gray, (x, y), (x + w, y + h), (0, 255, 0), 2)
+                if debug:
+                    for (x, y, w, h) in faces:
+                        cv2.rectangle(gray, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
-            if len(faces) == 1:
-                time.sleep(1)
-                cv2.imwrite('testing.png', gray)
-                print('picture taken!')
-                send_img_to_server('testing.png', server, port, rfid, username, password)
-                images_taken += 1
-                log.info(str(dt.datetime.now()) + ' :: face found.')
+                if len(faces) == 1:
+                    time.sleep(1)
+                    cv2.imwrite('testing.png', gray)
+                    print('picture taken!')
+                    send_img_to_server('testing.png', server, port, rfid, username, password)
+                    images_taken += 1
+                    log.info(str(dt.datetime.now()) + ' :: face found.')
 
-            if debug:
-                cv2.imshow('frame', gray)
+                if debug:
+                    cv2.imshow('frame', gray)
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
 
-        video_capture.release()
+        # video_capture.release()  # causes a bug when enabled
         if debug:
             cv2.waitKey(1)
             cv2.destroyAllWindows()
