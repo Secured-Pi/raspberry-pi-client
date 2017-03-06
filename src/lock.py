@@ -1,5 +1,6 @@
 # coding: utf-8
 import requests
+from rfid import get_RFID
 
 try:
     input = raw_input
@@ -71,12 +72,22 @@ class RPiLock(object):
             location = input('Location (required): ')
             if location:
                 break
+
+        rfid = ''
+        use_rfid = input('Would you like to scan an RFID card now(y/n)? ')
+        while True:
+            if use_rfid != 'y' or rfid:
+                break
+            rfid = get_RFID()
+            use_rfid = False
+
         json = {
             'name': name,
             'location': location,
             'serial': self.serial,
             'active': True,
-            'status': 'pending'
+            'status': 'pending',
+            'RFID': rfid
         }
         added_lock = requests.post(
             req_url,
