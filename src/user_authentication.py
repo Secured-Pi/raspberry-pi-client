@@ -82,8 +82,8 @@ def begin_watch(server=SERVER, port=PORT, debug=False, username=None, password=N
     # TODO:  make the while loop continuous and not bug out, with RFID to
     # relock if the timer cannot be implemented well.
     while True:
-        rfid = get_RFID()
         images_taken = 0
+        rfid = get_RFID()
 
         while True:
             if images_taken > 5:
@@ -117,8 +117,10 @@ def begin_watch(server=SERVER, port=PORT, debug=False, username=None, password=N
 
         video_capture.release()
         if debug:
+            cv2.waitKey(1)
             cv2.destroyAllWindows()
-        rfid = get_RFID()
+            for i in range(5):
+                cv2.waitKey(1)
 
 if __name__ == '__main__':
     user = os.environ.get('LOCK_USER')
