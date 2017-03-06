@@ -141,10 +141,9 @@ class RPiLock(object):
     def listen_for_io_signal(self, flask_port):
         """Establish a never-ending connection and listen to signal."""
         from socketIO_client import SocketIO
-        print('Listening for io signal...')
         print('server:', self.server, flask_port)
         self.io_client = SocketIO(self.server, flask_port)
-        self.io_client.emit(b'listening', {'serial': self.serial})
+        self.io_client.emit('listening', {'serial': self.serial})
         self.io_client.on('unlock', self.handle_io_event)
         self.io_client.on('lock', self.handle_io_event)
         print('Now listening to central server')
