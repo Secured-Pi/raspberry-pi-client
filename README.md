@@ -11,6 +11,12 @@ http://www.pyimagesearch.com/2016/04/18/install-guide-raspberry-pi-3-raspbian-je
 modules in teh modules folder.  I find that they usually have some error when trying to install
 them.
 
+Install a couple of dependencies on the RPi:
+```
+sudo apt-get install pigpio
+sudo apt-get install python3-rpi.gpio python-rpi.gpio
+```
+
 In that same virtual environment (that you hopefully used), run
 ```
 pip install -r requirements.txt
