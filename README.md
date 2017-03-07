@@ -7,6 +7,10 @@ This will require OpenCV.  Here is a great guide for setting it up on the
 Raspberry Pi 3 Model B:
 http://www.pyimagesearch.com/2016/04/18/install-guide-raspberry-pi-3-raspbian-jessie-opencv-3/
 
+- Note:  You only need the 'face' module from the opencv_contrib repo.  You can delete the other
+modules in teh modules folder.  I find that they usually have some error when trying to install
+them.
+
 In that same virtual environment (that you hopefully used), run
 ```
 pip install -r requirements.txt
