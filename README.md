@@ -1,7 +1,7 @@
 # Client-side app
 
 ## Description
-Client-side python script that let RPi subscribes to socketio stream from Secured-Pi sever.
+Client-side python script that let RPi subscribes to socketio stream from Secured-Pi Flask sever.
 
 This will require OpenCV.  Here is a great guide for setting it up on the
 Raspberry Pi 3 Model B:
