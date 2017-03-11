@@ -25,8 +25,11 @@ pip install -r requirements.txt
 If you did not, you may have to copy some files over from your system python path
 (you can find how to do this on StackOverflow...I will provide a link later)
 
-Then to register your account (assuming the Django server is running and
-you have already made an account):
+In the src/main.py file, change you Django server to the appropriate  network ip of
+the computer running the Django server (you can find this by running ifconfig on the machine).
+Do this for the user_authentication.py as well.
+Then to register your account (assuming the Django server is running and you have
+already made an account):
 ```
 python main.py
 ```
