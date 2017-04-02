@@ -8,7 +8,7 @@ Raspberry Pi 3 Model B:
 http://www.pyimagesearch.com/2016/04/18/install-guide-raspberry-pi-3-raspbian-jessie-opencv-3/
 
 - Note:  You only need the 'face' module from the opencv_contrib repo.  You can delete the other
-modules in teh modules folder.  I find that they usually have some error when trying to install
+modules in the modules folder.  I find that they usually have some error when trying to install
 them.
 
 Install a couple of dependencies on the RPi:
@@ -25,7 +25,7 @@ pip install -r requirements.txt
 If you did not, you may have to copy some files over from your system python path
 (you can find how to do this on StackOverflow...I will provide a link later)
 
-In the src/main.py file, change you Django server to the appropriate  network ip of
+In the src/main.py file, change your Django server to the appropriate  network ip of
 the computer running the Django server (you can find this by running ifconfig on the machine).
 Do this for the user_authentication.py as well.
 Then to register your account (assuming the Django server is running and you have
