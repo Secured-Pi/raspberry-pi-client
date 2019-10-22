@@ -21,7 +21,7 @@ picraft==0.6
 pifacecommon==4.1.2
 pifacedigitalio==3.0.5
 pigpio==1.35
-Pillow==2.6.1
+Pillow==6.2.0
 pyinotify==0.9.4
 pyparsing==2.1.10
 pyserial-py3k==2.6
